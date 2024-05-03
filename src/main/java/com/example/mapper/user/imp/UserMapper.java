@@ -1,7 +1,8 @@
-package com.example.mapper.user;
+package com.example.mapper.user.imp;
 
 import com.example.domain.User;
 import com.example.dto.user.UserDTO;
+import com.example.mapper.user.IUserMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 

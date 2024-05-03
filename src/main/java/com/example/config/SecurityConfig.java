@@ -41,7 +41,13 @@ public class SecurityConfig {
                         .requestMatchers("/auth/v1/*").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**", "/h2-console/**")
                         .permitAll()
-                        .anyRequest().authenticated())
+                        // for working with keycloak auth
+//                        .anyRequest().authenticated()
+                        // for working without a keycloak connection
+                        .anyRequest().permitAll()
+
+                )
+
 
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

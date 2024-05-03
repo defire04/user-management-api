@@ -11,22 +11,27 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Optional;
 
 @Configuration
 @EnableCaching
-@EnableJpaAuditing(auditorAwareRef="auditorProvider")
+@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public class ApplicationConfig {
 
     @Bean
     public AuditorAware<String> auditorProvider() {
         return () -> {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String preferredUsername = ((Jwt) authentication.getPrincipal()).getClaims().get("preferred_username").toString();
 
-            return Optional.of(preferredUsername);
+            // for working without a keycloak connection
+            try {
+                String preferredUsername = ((Jwt) authentication.getPrincipal()).getClaims().get("preferred_username").toString();
+
+                return Optional.of(preferredUsername);
+            } catch (Exception e) {
+                return Optional.of("anonymous");
+            }
         };
     }
 
