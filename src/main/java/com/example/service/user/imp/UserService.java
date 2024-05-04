@@ -23,14 +23,6 @@ public class UserService implements IUserService {
 
     private final FieldsUpdaterMapper fieldsUpdaterMapper;
 
-
-    /**
-     * Create a new user.
-     *
-     * @param user The user to create.
-     * @return The created user.
-     * @throws UserWithThisEmailAlreadyExistsException If a user with this email already exists.
-     */
     @NonNull
     @Transactional
     @Override
@@ -40,14 +32,6 @@ public class UserService implements IUserService {
         return userRepository.save(user);
     }
 
-    /**
-     * Update all user information.
-     *
-     * @param user The user to update.
-     * @return The updated user.
-     * @throws UserWithThisIdNotFoundException        If no user with the given ID is found.
-     * @throws UserWithThisEmailAlreadyExistsException If a user with the given email already exists.
-     */
     @NonNull
     @Transactional
     @Override
@@ -57,14 +41,6 @@ public class UserService implements IUserService {
         return userRepository.save(user);
     }
 
-    /**
-     * Update some fields of a user.
-     *
-     * @param user The user with updated fields.
-     * @return The updated user.
-     * @throws UserWithThisIdNotFoundException        If no user with the given ID is found.
-     * @throws UserWithThisEmailAlreadyExistsException If a user with the given email already exists.
-     */
     @NonNull
     @Transactional
     @Override
@@ -74,64 +50,32 @@ public class UserService implements IUserService {
         return userRepository.save(fieldsUpdaterMapper.updateFields(existingUser, user));
     }
 
-    /**
-     * Delete a user by ID.
-     *
-     * @param userId The ID of the user to delete.
-     * @throws UserWithThisIdNotFoundException If no user with the given ID is found.
-     */
     @Transactional
     @Override
     public void delete(Long userId) {
         userRepository.delete(getUserById(userId));
     }
 
-    /**
-     * Find users by birth date within a range.
-     *
-     * @param from The start date of the range.
-     * @param to   The end date of the range.
-     * @param size The page size.
-     * @param page The page number.
-     * @return A page of users.
-     */
+
     @NonNull
     @Override
     public Page<User> findByBirthDateBetween(Date from, Date to, int size, int page) {
         return userRepository.findByBirthDateBetween(from, to, PageRequest.of(page, size));
     }
 
-    /**
-     * Get a user by ID or throw an exception if the user is not found.
-     *
-     * @param userId The ID of the user.
-     * @return The user with the specified ID.
-     * @throws UserWithThisIdNotFoundException If no user with the given ID is found.
-     */
     private User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserWithThisIdNotFoundException(userId));
     }
 
-    /**
-     * Check if a user with the given email already exists.
-     *
-     * @param email The email to check.
-     * @throws UserWithThisEmailAlreadyExistsException If a user with the given email already exists.
-     */
+
     private void checkIfEmailExists(String email) {
         if (userRepository.existsByEmail(email)) {
             throw new UserWithThisEmailAlreadyExistsException();
         }
     }
 
-    /**
-     * Check if a user with the given email exists but has a different ID.
-     *
-     * @param email The email to check.
-     * @param id    The ID to exclude from the check.
-     * @throws UserWithThisEmailAlreadyExistsException If a user with the given email already exists but has a different ID.
-     */
+
     private void checkIfEmailExistsAndNotCurrentId(String email, Long id) {
         if (userRepository.existsByEmailAndNotId(email, id)) {
             throw new UserWithThisEmailAlreadyExistsException();
