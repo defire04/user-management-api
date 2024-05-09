@@ -32,7 +32,7 @@ This project demonstrates an example of a User Management API, implementing CRUD
 8. **Technologies**:
    - Lombok
    - ModelMapper
-   - H2 Database
+   - Postgresql Database
    - Spring Data Envers
    - Spring Boot Starter Web
    - Spring Boot Starter Test
@@ -41,10 +41,35 @@ This project demonstrates an example of a User Management API, implementing CRUD
    - Spring Boot Starter Validation
    - Springdoc OpenAPI Starter WebMvc UI
    - Spring Boot Starter OAuth2 Resource Server
- 
-10. **Authentication**: Keycloak is used for authentication.
 
-11. **Deployment**: Docker Compose is used for deployment.
+10. **Authentication**: Keycloak is used for authentication. For Keycloak, MySQL is used:
+
+    ```yaml
+    mysql-kc:
+      image: mysql:8.0.27
+      ports:
+        - "3366:3306"
+      restart: unless-stopped
+      environment:
+        MYSQL_USER: keycloak_user
+        MYSQL_PASSWORD: keycloak_password
+        MYSQL_DATABASE: keycloak_db
+        MYSQL_ROOT_PASSWORD: root_password
+    ```
+
+11. **Deployment**: Docker Compose is used for deployment. For the main service, PostgreSQL is used:
+
+    ```yaml
+    project-db:
+      image: postgres:14.7-alpine
+      environment:
+        POSTGRES_USER: username
+        POSTGRES_PASSWORD: password
+        POSTGRES_DB: user-management-db
+      ports:
+        - "5432:5432"
+      restart: unless-stopped
+    ```
 
 ## Getting Started
 
@@ -102,7 +127,7 @@ This project demonstrates an example of a User Management API, implementing CRUD
 
 6. To access the Keycloak administration console, navigate to:
 
-   [Keycloak Admin Console](http://localhost:9999/admin)
+   [Keycloak Admin Console](http://localhost:9999/admin/master/console/#/user-management-realm)
 
    You can log in with the following credentials:
    - Username: root

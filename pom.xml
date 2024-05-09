@@ -18,6 +18,7 @@
         <modelmapper.version>3.1.1</modelmapper.version>
         <keycloak-admin-client.version>21.1.1</keycloak-admin-client.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.3.0</springdoc-openapi-starter-webmvc-ui.version>
+        <postgresql.version>42.7.3</postgresql.version>
     </properties>
     <dependencies>
         <!-- DB -->
@@ -26,9 +27,9 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
         </dependency>
 
         <dependency>
