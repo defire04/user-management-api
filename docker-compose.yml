@@ -21,9 +21,9 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8888:8888"
     environment:
-      - SERVER_PORT=8080
+      - SERVER_PORT=8888
       - KEYCLOAK_URL=http://keycloak:9999
     depends_on:
       - keycloak
