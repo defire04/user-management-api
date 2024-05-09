@@ -45,30 +45,68 @@ This project demonstrates an example of a User Management API, implementing CRUD
 10. **Authentication**: Keycloak is used for authentication. For Keycloak, MySQL is used:
 
     ```yaml
-    mysql-kc:
-      image: mysql:8.0.27
-      ports:
-        - "3366:3306"
-      restart: unless-stopped
-      environment:
-        MYSQL_USER: keycloak_user
-        MYSQL_PASSWORD: keycloak_password
-        MYSQL_DATABASE: keycloak_db
-        MYSQL_ROOT_PASSWORD: root_password
+       mysql-kc:
+         image: mysql:8.0.27
+         ports:
+           - "3366:3306"
+         restart: unless-stopped
+         environment:
+           MYSQL_USER: keycloak_user
+           MYSQL_PASSWORD: keycloak_password
+           MYSQL_DATABASE: keycloak_db
+           MYSQL_ROOT_PASSWORD: root_password
+    
+        keycloak:
+          image: quay.io/keycloak/keycloak:21.1.1
+          command:
+            - "-v start-dev"
+            - "--import-realm"
+          ports:
+            - "9999:8080"
+          environment:
+            KEYCLOAK_ADMIN: root
+            KEYCLOAK_ADMIN_PASSWORD: 1
+            DB_VENDOR: mysql
+            DB_ADDR: mysql-kc
+            DB_PORT: 3306
+            DB_USER: keycloak_user
+            DB_PASSWORD: keycloak_password
+            DB_DATABASE: keycloak_db
+          volumes:
+            - ./keycloak:/opt/keycloak/data/import
+          depends_on:
+            - mysql-kc
+    
     ```
 
 11. **Deployment**: Docker Compose is used for deployment. For the main service, PostgreSQL is used:
 
     ```yaml
-    project-db:
-      image: postgres:14.7-alpine
-      environment:
-        POSTGRES_USER: username
-        POSTGRES_PASSWORD: password
-        POSTGRES_DB: user-management-db
-      ports:
-        - "5432:5432"
-      restart: unless-stopped
+       project-db:
+         image: postgres:14.7-alpine
+         environment:
+           POSTGRES_USER: username
+           POSTGRES_PASSWORD: password
+           POSTGRES_DB: user-management-db
+         ports:
+           - "5555:5432"
+         restart: unless-stopped
+    
+      user-management-api:
+       build:
+         context: .
+         dockerfile: Dockerfile
+       ports:
+         - "8888:8888"
+       environment:
+         SPRING_DATASOURCE_URL: jdbc:postgresql://project-db:5432/user-management-db
+         SPRING_DATASOURCE_USERNAME: username
+         SPRING_DATASOURCE_PASSWORD: password
+         SERVER_PORT: 8888
+         KEYCLOAK_URL: http://keycloak:8080
+       depends_on:
+         - keycloak
+         - project-db
     ```
 
 ## Getting Started
