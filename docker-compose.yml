@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.1.1
+    command:
+      - "-v start-dev"
+      - "--http-port=9999"
+      - "--import-realm"
+    ports:
+      - "9999:9999"
+    environment:
+      KEYCLOAK_ADMIN: root
+      KEYCLOAK_ADMIN_PASSWORD: 1
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import
+
+  user-management-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - KEYCLOAK_URL=http://keycloak:9999
+    depends_on:
+      - keycloak
+
