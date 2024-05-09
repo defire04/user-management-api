@@ -51,7 +51,7 @@ This project demonstrates an example of a User Management API, implementing CRUD
 1. Clone this repository to your local machine:
 
     ```bash
-    git clone https://github.com/defire04/user-management-api
+    git clone [https://github.com/defire04/user-management-api](https://github.com/defire04/user-management-api.git)
     ```
 
 2. Navigate to the project directory:
